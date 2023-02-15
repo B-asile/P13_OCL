@@ -1,0 +1,20 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.1.1
+
+jobs:
+  run-tests:
+    docker:
+      - image: cimg/python:3.9.1
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run: flake8
+      - run: pytest
+
+workflows:
+  main:
+    jobs:
+      - run-tests
