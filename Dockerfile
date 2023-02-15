@@ -21,4 +21,6 @@ EXPOSE 8000
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # Démarer en mode gunicorn (serveur local sur 127.0.0.1:8000)
-CMD gunicorn oc_lettings_site.wsgi:application --log-file=- --bind 0.0.0.0:8000
+# CMD gunicorn oc_lettings_site.wsgi:application --log-file=- --bind 0.0.0.0:8000
+# Démarer en mode gunicorn sur Heroku
+CMD gunicorn oc_lettings_site.wsgi:application --log-file=- --bind 0.0.0.0:$PORT
