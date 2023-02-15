@@ -20,10 +20,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: |
-          sudo add-apt-repository ppa:git-core/ppa -y
-          sudo apt-get update
-          sudo apt-get install git -y
       - run:
           name: Send Image to Docker Hub
           command: |
