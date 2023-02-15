@@ -38,6 +38,19 @@ jobs:
             docker tag "$DOCKER_USER"/ocl:lasted "$DOCKER_USER"/ocl:$CIRCLE_SHA1
             docker push "$DOCKER_USER"/ocl:$CIRCLE_SHA1
             docker push "$DOCKER_USER"/ocl:lasted
+  deploy-on-heroku:
+    machine: true
+    steps:
+        - checkout
+        - run:
+            name: Build and push Docker image to Heroku
+            command: |
+              set -x
+              curl https://cli-assets.heroku.com/install.sh | sh
+              HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+              HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a orangecountylettings web
+              HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a orangecountylettings web
+              HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set SENTRY_DSN=$SENTRY_DSN -a orangecountylettings
 workflows:
   main:
     jobs:
@@ -45,6 +58,12 @@ workflows:
       - build-docker-image-publish:
           requires:
             - run-tests
+          filters:
+            branches:
+              only: master
+      - deploy-on-heroku:
+          requires:
+            - build-docker-image-publish
           filters:
             branches:
               only: master
