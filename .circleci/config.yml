@@ -57,12 +57,6 @@ jobs:
     steps:
         - checkout
         - run:
-            name: Create virtual environment
-            command: python -m venv venv
-        - run:
-            name: Activate virtual environment
-            command: source venv/bin/activate
-        - run:
             name: Build and push Docker image to Heroku
             command: |
               set -x
