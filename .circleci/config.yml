@@ -21,6 +21,11 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Install Docker CLI
+          command: |
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sh get-docker.sh
+      - run:
           name: Send Image to Docker Hub
           command: |
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
