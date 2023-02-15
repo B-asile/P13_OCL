@@ -10,17 +10,23 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Create virtual environment
-        command: |
-          python -m venv venv
-          source venv/bin/activate
+          name: Upgrade pip
+          command: pip install --upgrade pip
       - run:
-        name: Upgrade pip
-        command: pip install --upgrade pip
-      - python/install-packages:
-          pkg-manager: pip
-      - run: flake8
-      - run: pytest
+          name: Create virtual environment
+          command: python -m venv venv
+      - run:
+          name: Activate virtual environment
+          command: source venv/bin/activate
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Run flake8
+          command: flake8
+      - run:
+          name: Run pytest
+          command: pytest
   build-docker-image-publish:
     docker:
       - image: python:3.9-slim-bullseye
