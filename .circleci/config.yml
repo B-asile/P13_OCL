@@ -13,8 +13,28 @@ jobs:
           pkg-manager: pip
       - run: flake8
       - run: pytest
-
+  build-docker-image-publish:
+    docker:
+      - image: "cimg/python:3.9.1"
+    resource_class: medium
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Send Image to Docker Hub
+          command: |
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+            docker build -t $DOCKER_USER/ocl:lasted .
+            docker tag $DOCKER_USER/ocl:lasted $DOCKER_USER/ocl:$CIRCLE_SHA1
+            docker push $DOCKER_USER/ocl:$CIRCLE_SHA1
+            docker push $DOCKER_USER/ocl:lasted
 workflows:
   main:
     jobs:
       - run-tests
+      - build-docker-image-publish:
+          requires:
+            - run-tests
+          filters:
+            branches:
+              only: master
