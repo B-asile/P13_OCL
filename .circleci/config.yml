@@ -6,7 +6,7 @@ orbs:
 jobs:
   run-tests:
     docker:
-      - image: cimg/python:3.9.1
+      - image: python:3.9-slim-bullseye
     steps:
       - checkout
       - python/install-packages:
@@ -15,7 +15,7 @@ jobs:
       - run: pytest
   build-docker-image-publish:
     docker:
-      - image: "cimg/python:3.9.1"
+      - image: python:3.9-slim-bullseye
     resource_class: medium
     steps:
       - checkout
