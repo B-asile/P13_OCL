@@ -27,11 +27,11 @@ jobs:
       - run:
           name: Send Image to Docker Hub
           command: |
-            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-            docker build -t $DOCKER_USER/ocl:lasted .
-            docker tag $DOCKER_USER/ocl:lasted $DOCKER_USER/ocl:$CIRCLE_SHA1
-            docker push $DOCKER_USER/ocl:$CIRCLE_SHA1
-            docker push $DOCKER_USER/ocl:lasted
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker build -t "$DOCKER_USER"/ocl:lasted .
+            docker tag "$DOCKER_USER"/ocl:lasted "$DOCKER_USER"/ocl:$CIRCLE_SHA1
+            docker push "$DOCKER_USER"/ocl:$CIRCLE_SHA1
+            docker push "$DOCKER_USER"/ocl:lasted
 workflows:
   main:
     jobs:
