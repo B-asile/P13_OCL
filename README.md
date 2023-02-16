@@ -7,9 +7,10 @@ Site web d'Orange County Lettings
 ### Prérequis
 
 - Compte GitHub avec accès en lecture à ce repository
-- Compte Circle Ci
-- Compte Heroku
-- Compte Sentry
+- Compte Circle Ci (pour la version Pipeline de déploiement)
+- Compte Heroku (pour la version Pipeline de déploiement)
+- Compte Sentry (pour la version Pipeline de déploiement)
+- Compte Docker Hub (pour la version Pipeline de déploiement)
 - Git CLI
 - SQLite3 CLI
 - Interpréteur Python, version 3.9 ou supérieure
@@ -21,7 +22,7 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 #### Cloner le repository
 
 - `cd /path/to/put/project/in`
-- `git clone https://github.com/OpenClassrooms-Student-Center/Python-OC-Lettings-FR.git`
+- `git clone git@github.com:B-asile/P13_OCL.git'
 
 #### Créer l'environnement virtuel
 
@@ -35,11 +36,12 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 - Confirmer que la commande `pip` exécute l'exécutable pip dans l'environnement virtuel, `which pip`
 - Pour désactiver l'environnement, `deactivate`
 
-#### Exécuter le site
+#### Exécuter le site en local
 
 - `cd /path/to/Python-OC-Lettings-FR`
 - `source venv/bin/activate`
 - `pip install --requirement requirements.txt`
+- Aller dans oc_lettings_site, Settings.py commenter la SECRET_KEY actuelle et dé-commenter celle de Test
 - `python manage.py runserver`
 - Aller sur `http://localhost:8000` dans un navigateur.
 - Confirmer que le site fonctionne et qu'il est possible de naviguer (vous devriez voir plusieurs profils et locations).
@@ -78,3 +80,37 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+#### Exécuter le Pipeline de déploiement:
+Prerequis Circle Ci:
+Dans Project Settings, il faut indiquer les Variables d'environnement suivantes : 
+- DOCKER_USER : correspondant au compte user de Docker Hub hébergeant les dockers
+- DOCKER_PASS : correspondant au mot de passe du compte ci-dessus
+- DEBUG : 'False' pour indiquer que le site est en production (Variable du Settings.py de Django)
+- SECRET_KEY : Correspond à la clef nécessaire inscrite dans Settings.py du projet Django
+- HEROKU_API_KEY : à récupérer dans les Settings de l'application Heroku
+
+Prerequis HEROKU:
+Dans Application Settings, Config Vars, il est nécessaire d'indiquer les variables d'envrionnement suivantes:
+- DEBUG : 'False' pour indiquer que le site est en production (Variable du Settings.py de Django)
+- SECRET_KEY : Correspond à la clef nécessaire inscrite dans Settings.py du projet Django
+- PORT : 8000
+- SENTRY_DSN : clef récupérable dans les Settings de l'application de surveillance SENTRY
+
+
+Pour construire une image du site pour Docker et la pousse vers le registre des conteneurs du Docker Hub
+`docker build -t dockeraccount/appname . construire une image`
+`docker tag dockeraccount/appname dockeraccount/appname:versiontag`
+`docker push dockeraccount/appname:versiontag`
+
+Récupérer l'image du registre sur votre machine locale
+`docker pull dockeraccount/appname:versiontag`
+lancer le site localement en utilisant l'image
+`docker run -p 8000:8000 dockeraccount/appname:versiontag`
+
+le déploiement est configuré de manière à ce que seules les modifications apportées à la branche master dans GitHub 
+déclenchent la conteneurisation et le déploiement du site.
+Les modifications apportées aux autres branches déclenchent la compilation et les tests (sans déployer le site ou 
+effectuer la conteneurisation).
+Le pipeline de déploiement se répète à chaque Commit sur GitHub et peux être lancé directement sur CircleCi
+La tâche de conteneurisation est exécutée que si la compilation et les tests sont réussies.
