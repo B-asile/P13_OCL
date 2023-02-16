@@ -7,6 +7,9 @@ Site web d'Orange County Lettings
 ### Prérequis
 
 - Compte GitHub avec accès en lecture à ce repository
+- Compte Circle Ci
+- Compte Heroku
+- Compte Sentry
 - Git CLI
 - SQLite3 CLI
 - Interpréteur Python, version 3.9 ou supérieure
