@@ -81,7 +81,7 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
 
-#### Exécuter le Pipeline de déploiement:
+## Exécuter le Pipeline de déploiement:
 Prerequis Circle Ci:
 Dans Project Settings, il faut indiquer les Variables d'environnement suivantes : 
 - DOCKER_USER : correspondant au compte user de Docker Hub hébergeant les dockers
